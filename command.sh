@@ -1,1 +1,1 @@
-pip install yt-dlp
+sudo apt update
