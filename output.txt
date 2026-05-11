@@ -1,2 +1,9 @@
-Runner started
-===== Mon May 11 13:21:14 UTC 2026 =====
+$ pip install yt-dlp
+Defaulting to user installation because normal site-packages is not writeable
+Collecting yt-dlp
+  Downloading yt_dlp-2026.3.17-py3-none-any.whl.metadata (182 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 182.3/182.3 kB 10.8 MB/s eta 0:00:00
+Downloading yt_dlp-2026.3.17-py3-none-any.whl (3.3 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 134.1 MB/s eta 0:00:00
+Installing collected packages: yt-dlp
+Successfully installed yt-dlp-2026.3.17
