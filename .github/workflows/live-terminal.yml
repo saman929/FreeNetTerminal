@@ -3,51 +3,44 @@ name: Live Command Terminal
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   terminal:
     runs-on: ubuntu-latest
-    timeout-minutes: 350
-    permissions:
-     contents: write
-
 
     steps:
-      - name: Checkout repo 
+      - name: Checkout runner-sync branch
         uses: actions/checkout@v4
+        with:
+          ref: runner-sync
+          fetch-depth: 0
 
-      - name: Setup git
+      - name: Setup git identity
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Start command loop
         run: |
           echo "Runner started" > output.txt
-          git add output.txt
-          git commit -m "runner started" || true
-          git push || true
 
-          LAST_CMD=""
+          last_cmd=""
 
-          while true
-          do
-            git pull
+          while true; do
+            cmd=$(cat command.sh)
 
-            if [ -f command.sh ]; then
-              CMD_HASH=$(sha1sum command.sh)
+            if [ "$cmd" != "$last_cmd" ]; then
+              echo "Running new command..."
+              echo "\$ $cmd" > output.txt
+              bash -c "$cmd" >> output.txt 2>&1
+              last_cmd="$cmd"
 
-              if [ "$CMD_HASH" != "$LAST_CMD" ]; then
-                echo "===== $(date) =====" >> output.txt
-                chmod +x command.sh
-                ./command.sh >> output.txt 2>&1
-
-                git add output.txt
-                git commit -m "command executed" || true
-                git push || true
-
-                LAST_CMD="$CMD_HASH"
-              fi
+              git add output.txt
+              git commit -m "update output" || true
+              git push origin HEAD:runner-sync || true
             fi
 
-            sleep 15
+            sleep 10
           done
